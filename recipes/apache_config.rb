@@ -25,8 +25,12 @@ node['rails_apps'].each do |dbag_item|
 end
 
 app_configs.each do |app|
+  
+  appname = app['id']
+  
   # Set up directories for each stage
   app['stages'].each do |stage_name, stage_data|
+   
     
     deploy_user   = stage_data['deploy_user']
     base_path     = "/home/#{deploy_user}/#{appname}/#{stage_name}"    
