@@ -20,7 +20,7 @@
 app_configs = []
 node['rails_apps'].each do |dbag_item|
   search(:rails_apps, "id:#{dbag_item}") do |item|
-    app_config << item
+    app_configs << item
   end
 end
 
