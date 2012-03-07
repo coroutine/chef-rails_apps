@@ -1,0 +1,23 @@
+<% if not @stage_name.empty? %>
+<%= @stage_name %>:
+  adapter: <%= @adapter %>
+  database: <%= @dbname %>
+  <% if (not @pool.nil?) && (@pool != "") %>  
+  pool: <%= @pool %>
+  <% end %>
+  <% if (not @timeout.nil?) && (@timeout != "") %>
+  timeout: <%= @timeout %>
+  <% end %>
+  <% if not @reconnect.empty? %>
+  reconnect: <%= @reconnect %>
+  <% end %>
+  <% if not @encoding.empty? %>
+  encoding: <%= @encoding %>
+  <% end %>
+  <% if not @username.empty? %>
+  username: <%= @username %>
+  <% end %>
+  <% if not @password.empty? %>
+  password: <%= @password %> 
+  <% end %>
+<% end %>
