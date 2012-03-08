@@ -47,12 +47,14 @@ app_configs.each do |app|
       rack_env                  stage_name
       server_name               stage_data['hostname']
       server_aliases            stage_data['aliases'] || []
+      server_admin              stage_data['admin'] || 'root@localhost'
+      port                      stage_data['port'] || 80
       redirect_from             stage_data['redirect_from']
       template                  "apache.conf.erb" 
       passenger_min_instances   stage_data['min_instances'] || 1
       enable                    stage_data['enable']
-      enable_ssl                stage_data['enable_ssl']
-      ssl_port                  stage_data['ssl_port']
+      enable_ssl                stage_data['enable_ssl'] || false
+      ssl_port                  stage_data['ssl_port'] || 443
       ssl_cert_file             stage_data['ssl_cert_file']
       ssl_cert_key_file         stage_data['ssl_cert_key_file']
       ssl_cert_chain_file       stage_data['ssl_cert_chain_file']

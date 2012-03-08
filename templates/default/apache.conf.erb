@@ -21,15 +21,23 @@
     BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 </Directory>
 
-<VirtualHost *:80>
+<VirtualHost *:<%= @params[:port] %>>
     <% if @params[:server_name] and not @params[:server_name].empty? %>
     ServerName    <%= @params[:server_name] %>
+    <% else %>
+    ServerName <%= node.name %>
     <% end %>
 
+    <% if @params[:server_aliases].length > 0 %>
     <% [ @params[:server_aliases] ].flatten.compact.uniq.each do |server_alias| %>
     ServerAlias   <%= server_alias %>
     <% end %>
+    <% else %>
+    ServerAlias   <%= node.fqdn %>
+    <% end %>
 
+    ServerAdmin <%= @params[:server_admin] %> 
+    
     DocumentRoot  <%= @params[:docroot] %>
 
     <% [ @params[:redirect_from] ].flatten.compact.uniq.each do |host| %>
