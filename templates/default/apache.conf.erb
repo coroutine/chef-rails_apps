@@ -11,7 +11,10 @@
     <FilesMatch "\.(ico|gif|jpe?g|png|js|css)$">
         ExpiresDefault "access plus 1 year"
     </FilesMatch>
-    
+
+    XSendFile on
+    XSendFileAllowAbove on
+
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript text/css application/javascript
     BrowserMatch ^Mozilla/4 gzip-only-text/html
     BrowserMatch ^Mozilla/4\.0[678] no-gzip
