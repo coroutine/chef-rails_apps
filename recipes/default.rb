@@ -1,7 +1,4 @@
 #
-# Cookbook Name:: rails_apps 
-# Recipe:: default
-#
 # Copyright 2012, Coroutine LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +14,29 @@
 # limitations under the License.
 #
 
+
+# Look through all of the "rails_apps" data bags
+# to see if any of them need SSL. If so, set a flag
+# so we'll install that from the apache2 cookbook.
+include_mod_ssl = false
+app_configs = []
+node['rails_apps'].each do |dbag_item|
+  app_configs << Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
+end
+
+app_configs.each do |app|
+  app['stages'].each do |stage_name, stage_data|
+    if stage_data['enable_ssl']
+      include_mod_ssl = true
+    end
+  end
+end
+
 include_recipe "apache2::default"
 include_recipe "apache2::mod_expires"
+if include_mod_ssl
+  include_recipe "apache2::mod_ssl"
+end
 include_recipe "apache2::mod_xsendfile"
 include_recipe "rvm::system"
 include_recipe "rvm_passenger::default"

@@ -21,9 +21,8 @@ include_recipe "rvm"
 
 app_configs = []
 node['rails_apps'].each do |dbag_item|
-  search(:rails_apps, "id:#{dbag_item}") do |item|
-    app_configs << item
-  end
+  # NOTE: shared secret must be in "/etc/chef/encrypted_data_bag_secret"
+  app_configs << Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
 end
 
 app_configs.each do |app|

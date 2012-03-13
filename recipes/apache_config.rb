@@ -18,10 +18,10 @@
 #
 
 app_configs = []
+
 node['rails_apps'].each do |dbag_item|
-  search(:rails_apps, "id:#{dbag_item}") do |item|
-    app_configs << item
-  end
+  # NOTE: shared secret must be in "/etc/chef/encrypted_data_bag_secret"
+  app_configs << Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
 end
 
 app_configs.each do |app|
@@ -35,6 +35,12 @@ app_configs.each do |app|
     deploy_user   = stage_data['deploy_user']
     base_path     = "/home/#{deploy_user}/#{appname}/#{stage_name}"    
     instance_name = [appname, stage_name].join("_")
+
+    # Set up directory and file name info for SSL certs
+    ssl_dir        = (stage_data['enable_ssl']) ? "/etc/apache2/ssl/#{appname}/#{stage_name}/" : ""
+    ssl_cert_file  = (stage_data['enable_ssl']) ? "#{instance_name}.crt" : ""
+    ssl_key_file   = (stage_data['enable_ssl']) ? "#{instance_name}.key" : ""
+    ssl_chain_file = (stage_data['enable_ssl']) ? "#{instance_name}-bundle.crt" : ""
 
     # See the definitions directory for the "app_config" source. It is 
     # a modified version of the "web_app" definition that is included 
@@ -53,12 +59,50 @@ app_configs.each do |app|
       template                  "apache.conf.erb" 
       passenger_min_instances   stage_data['min_instances'] || 1
       enable                    stage_data['enable']
-      enable_ssl                stage_data['enable_ssl'] || false
+      enable_ssl                stage_data['enable_ssl']
       ssl_port                  stage_data['ssl_port'] || 443
-      ssl_cert_file             stage_data['ssl_cert_file']
-      ssl_cert_key_file         stage_data['ssl_cert_key_file']
-      ssl_cert_chain_file       stage_data['ssl_cert_chain_file']
+      ssl_cert_file             ssl_dir + ssl_cert_file
+      ssl_cert_key_file         ssl_dir + ssl_key_file
+      ssl_cert_chain_file       ssl_dir + ssl_chain_file
     end
+
+    # If we're using SSL, create the appropriate 
+    # directories and files.
+    if stage_data['enable_ssl']
+   
+      # Create the directory
+      directory ssl_dir do
+        owner "root"
+        group "root"
+        mode "0755"
+        action :create
+        recursive true
+      end
+      
+      # Write the file contents
+      [[ssl_cert_file,  "ssl_cert_file"], 
+       [ssl_key_file,   "ssl_cert_key_file"],
+       [ssl_chain_file, "ssl_cert_chain_file"]].each do |ssl_filename, data_key|
+      
+        template_content = begin
+          if stage_data[data_key].instance_of? Array
+            stage_data[data_key].join("\n")
+          else
+            stage_data[data_key]
+          end
+        end
+
+        template "#{ssl_dir}#{ssl_filename}" do
+          source "ssl.erb"
+          owner  "root"
+          group  "root"
+          mode   0600
+          variables(:content => template_content)
+          notifies :reload, resources(:service => "apache2"), :delayed
+        end
+      end
+    end
+
   end 
 end
 
