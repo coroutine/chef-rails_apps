@@ -40,8 +40,8 @@ The following recipes are defined:
 * `setup` - creates intial directory structure for rails apps, using a layout similar to that which capistrano would expect.
 * `apache_config` - Configures Apache/Passenger.
 
-Setup an Encrypted Data Bag
----------------------------
+Set up an Encrypted Data Bag
+----------------------------
 This cookbook reaquires an *encrypted* data bag named `rails_apps`. This requires that the Chef Server 
 and all nodes have a shared secret key. *You'll need to make sure each node has a copy of the key in
 the default location*: `/etc/chef/encrypted_data_bag_secret`. You'll also need a copy on 
