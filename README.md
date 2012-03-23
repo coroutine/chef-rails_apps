@@ -70,7 +70,8 @@ The `rails_apps` data bag
 Each item in the `rails_apps` data bag should contain the following information. Notice 
 each app's `stages` contain database information that will get written to a `database.yml` file.
 
-    "id": "YOUR_APP_NAME",
+    "id": "UNIQUE_DATA_BAG_ID",
+    "appname":"YOUR_APP_NAME",
     "stages": {
         "production": {
             "deploy_user":"USERNAME",

@@ -26,7 +26,7 @@ end
 
 app_configs.each do |app|
   
-  appname = app['id']
+  appname = app['appname']
   
   # Set up directories for each stage
   app['stages'].each do |stage_name, stage_data|
