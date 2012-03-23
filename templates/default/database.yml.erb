@@ -1,6 +1,8 @@
 <% if not @stage_name.empty? %>
 <%= @stage_name %>:
   adapter: <%= @adapter %>
+  host: <%= @host %>
+  port: <%= @port %>
   database: <%= @dbname %>
   <% if (not @pool.nil?) && (@pool != "") %>  
   pool: <%= @pool %>

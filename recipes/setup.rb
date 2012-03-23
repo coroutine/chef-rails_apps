@@ -66,6 +66,8 @@ app_configs.each do |app|
       variables(
         :stage_name => stage_name,
         :adapter    => stage_data['database']['adapter'],
+        :host       => stage_data['database']['host'],
+        :port       => stage_data['database']['port'],
         :dbname     => stage_data['database']['dbname'],
         :pool       => stage_data['database']['pool'],
         :timeout    => stage_data['database']['timeout'],
