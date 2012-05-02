@@ -8,10 +8,13 @@ version          "0.1.3"
 recipe           "rails_apps::default", "Installs Apache, RVM, and Passenger"
 recipe           "rails_apps::setup", "Creates directory structure for Rails apps"
 recipe           "rails_apps::apache_config", "Configures Apache, Passenger"
+recipe           "rails_apps::logrotate", "Sets up logrotate for Rails logs"
 
 depends "apache2"
 depends "rvm"
 depends "rvm_passenger"
+
+recommends "logrotate"
 
 %w{ ubuntu debian }.each do |os|
   supports os

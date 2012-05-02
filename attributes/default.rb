@@ -27,4 +27,3 @@ default[:rails_apps] = []
 #   rails_apps/
 #     sample01.json
 #     sample02.json
-  
