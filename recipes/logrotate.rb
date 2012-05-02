@@ -17,16 +17,16 @@
 # limitations under the License.
 #
 
-
 # only try this if we've got the 'logrotate' recipe available:
-if node['recipes'].include?('logrotate::default') 
+if node['recipes'].include?('logrotate') || 
+   node['recipes'].include?('logrotate::default')
  
   logs = [] # wild-card path for rails logs
 
   node['rails_apps'].each do |dbag_item|
     app_config = Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
-    appname = app['appname']
-    app['stages'].each do |stage_name, stage_data|
+    appname = app_config['appname']
+    app_config['stages'].each do |stage_name, stage_data|
       deploy_user = stage_data['deploy_user'] || "root"
       logs << "/home/#{deploy_user}/#{appname}/#{stage_name}/shared/log/*.log"
     end
@@ -38,6 +38,10 @@ if node['recipes'].include?('logrotate::default')
     frequency "daily"
     create "644 root adm"
     rotate 7  # logs are removed after being rotated this many times
+  end
+
+  logs.each do |log|
+    Chef::Log.info("Configured logrotate for #{log}")
   end
 
 else
