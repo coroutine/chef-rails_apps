@@ -54,6 +54,7 @@ app_configs.each do |app|
       server_name               stage_data['hostname']
       server_aliases            stage_data['aliases'] || []
       server_admin              stage_data['admin'] || 'root@localhost'
+      ip_address                stage_data['ip_address'] || '*'
       port                      stage_data['port'] || 80
       redirect_from             stage_data['redirect_from']
       template                  "apache.conf.erb" 

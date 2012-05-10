@@ -21,7 +21,7 @@
     BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 </Directory>
 
-<VirtualHost *:<%= @params[:port] %>>
+<VirtualHost <%= "#{@params[:ip_address]}:#{@params[:port]}" %>>
     <% if @params[:server_name] and not @params[:server_name].empty? %>
     ServerName    <%= @params[:server_name] %>
     <% else %>

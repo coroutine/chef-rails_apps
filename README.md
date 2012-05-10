@@ -23,7 +23,7 @@ for more information.
 Attributes
 ==========
 This cookbook defines one attribute:
-    
+
     node[:rails_apps] = []
 
 This attribute should specify the data bag items that should be read from the `rails_apps` data bag. You must define this in a role
@@ -50,7 +50,7 @@ your managment system. You can generate a key by running the following command:
     openssl rand -base64 512 | tr -d '\r\n' > ~/.chef/encrypted_data_bag_secret
 
 Now, create a regular data bag if you haven't already:
-    
+
     knife data bag create rails_apps 
 
 Then, create an encrypted item for your app: 
@@ -62,7 +62,7 @@ Each value in the JSON file will be encrypted. You can save this file locally by
     knife data bag show rails_apps <appname> -Fj > data_bags/rails_apps/<appname>.json
 
 You can also edit existing data bags by running:
-    
+
     knife data bag edit rails_apps <appname> --secret-file ~/.chef/encrypted_data_bag_secret
 
 The `rails_apps` data bag
@@ -81,6 +81,7 @@ each app's `stages` contain database information that will get written to a `dat
             "min_instances":0,
             "redirect_from":"",
             "enable":false,
+            "ip_address":"192.168.0.1",  # may also be "*"
             "enable_ssl":true, 
             "ssl_port":"443",
             "ssl_cert_file":"CONTENT-OF-SSL-CERT-FILE-AS-AN-ARRAY",
@@ -103,7 +104,7 @@ each app's `stages` contain database information that will get written to a `dat
 
 ### SSL notes: 
 The `ssl_cert_file`, `ssl_cert_key_file`, and `ssl_cert_chain_file`, entries must be listed as an array, where each line of text in the file is an element in the array. For example:
-    
+
     "ssl_cert_file":[
         '-----BEGIN CERTIFICATE-----', 
         'MIID1DCCArwCCQCmIu63Dgum5zANBgkqhkiG9w0BAQUFADCBqzELMAkGA1UEBhMC', 
@@ -113,7 +114,7 @@ The `ssl_cert_file`, `ssl_cert_key_file`, and `ssl_cert_chain_file`, entries mus
         '8DCBC4i2TeH+OV6jLZegXEmsvukWVgzL', 
         '-----END CERTIFICATE-----'
     ]
-    
+
 If your app does not use SSL certs, you can omit `ssl_port`, `ssl_cert_file`, `ssl_cert_key_file`, and `ssl_cert_chain_file`, though you *should* include `enable_ssl:false`.
 
 ### Application Directories
