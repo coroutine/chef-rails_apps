@@ -13,7 +13,11 @@
     </FilesMatch>
 
     XSendFile on
+    <% if @params[:enable_send_file_allow_above] %>
     XSendFileAllowAbove on
+    <% elsif @params[:send_file_path] && !@params[:send_file_path].strip.empty? %>
+    XSendFilePath <%= @params[:send_file_path] %>
+    <% end %>
 
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript text/css application/javascript
     BrowserMatch ^Mozilla/4 gzip-only-text/html
@@ -22,7 +26,7 @@
 </Directory>
 
 <VirtualHost <%= "#{@params[:ip_address]}:#{@params[:port]}" %>>
-    <% if @params[:server_name] and not @params[:server_name].empty? %>
+    <% if @params[:server_name] && !@params[:server_name].empty? %>
     ServerName    <%= @params[:server_name] %>
     <% else %>
     ServerName <%= node.name %>
@@ -58,7 +62,7 @@
 
 <% if @params[:enable_ssl] %>
 <VirtualHost *:<%= @params[:ssl_port] %>>
-    <% if @params[:server_name] and not @params[:server_name].empty? %>
+    <% if @params[:server_name] && !@params[:server_name].empty? %>
     ServerName    <%= @params[:server_name] %>
     <% end %>
 

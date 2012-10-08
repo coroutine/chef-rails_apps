@@ -81,7 +81,9 @@ each app's `stages` contain database information that will get written to a `dat
             "min_instances":0,
             "redirect_from":"",
             "enable":false,
-            "ip_address":"192.168.0.1",  # may also be "*"
+            "ip_address":"192.168.0.1",  # may also be "*",
+            "enable_send_file_allow_above":false,   # see XSendFile notes below
+            "send_file_path":"/home/deploy/shared/files",
             "enable_ssl":true, 
             "ssl_port":"443",
             "ssl_cert_file":"CONTENT-OF-SSL-CERT-FILE-AS-AN-ARRAY",
@@ -101,6 +103,13 @@ each app's `stages` contain database information that will get written to a `dat
             }
         }
     }
+    
+### XSendFile Notes:
+The `enable_send_file_allow_above` attribute adds the `XSendFileAllowAbove on` declaration to the apache config.  By default, we do not include this delcaration as 
+it's deprecated in modern versions of XSendFile.  Typically, this should only be enabled when provisioning nodes with older distros.
+
+The `send_file_path` attribute adds the `XSendFilePath <absolute path>` declaration to the apache config.  This is the current method for defining paths from which files
+are sent.  This method supersedes `XSendFileAllowAbove`.
 
 ### SSL notes: 
 The `ssl_cert_file`, `ssl_cert_key_file`, and `ssl_cert_chain_file`, entries must be listed as an array, where each line of text in the file is an element in the array. For example:

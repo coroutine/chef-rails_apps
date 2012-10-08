@@ -19,9 +19,8 @@
 # to see if any of them need SSL. If so, set a flag
 # so we'll install that from the apache2 cookbook.
 include_mod_ssl = false
-app_configs = []
-node['rails_apps'].each do |dbag_item|
-  app_configs << Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
+app_configs = node['rails_apps'].map do |dbag_item|
+  Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
 end
 
 app_configs.each do |app|

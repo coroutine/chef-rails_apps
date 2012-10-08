@@ -17,11 +17,9 @@
 # limitations under the License.
 #
 
-app_configs = []
-
-node['rails_apps'].each do |dbag_item|
+app_configs = node['rails_apps'].map do |dbag_item|
   # NOTE: shared secret must be in "/etc/chef/encrypted_data_bag_secret"
-  app_configs << Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
+  Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
 end
 
 app_configs.each do |app|
@@ -49,22 +47,24 @@ app_configs.each do |app|
     # /etc/apache2/sites-available, optionally running a2ensite 
     # or a2dissite based on the value of the "enable" parameter.
     app_config(instance_name) do
-      docroot                   "#{base_path}/current/public"
-      rack_env                  stage_name
-      server_name               stage_data['hostname']
-      server_aliases            stage_data['aliases'] || []
-      server_admin              stage_data['admin'] || 'root@localhost'
-      ip_address                stage_data['ip_address'] || '*'
-      port                      stage_data['port'] || 80
-      redirect_from             stage_data['redirect_from']
-      template                  "apache.conf.erb" 
-      passenger_min_instances   stage_data['min_instances'] || 1
-      enable                    stage_data['enable']
-      enable_ssl                stage_data['enable_ssl']
-      ssl_port                  stage_data['ssl_port'] || 443
-      ssl_cert_file             ssl_dir + ssl_cert_file
-      ssl_cert_key_file         ssl_dir + ssl_key_file
-      ssl_cert_chain_file       ssl_dir + ssl_chain_file
+      docroot                       "#{base_path}/current/public"
+      rack_env                      stage_name
+      server_name                   stage_data['hostname']
+      server_aliases                stage_data['aliases'] || []
+      server_admin                  stage_data['admin'] || 'root@localhost'
+      ip_address                    stage_data['ip_address'] || '*'
+      port                          stage_data['port'] || 80
+      redirect_from                 stage_data['redirect_from']
+      template                      "apache.conf.erb" 
+      passenger_min_instances       stage_data['min_instances'] || 1
+      enable                        stage_data['enable']
+      enable_send_file_allow_above  stage_data['enable_send_file_allow_above']
+      send_file_path                stage_data['send_file_path']
+      enable_ssl                    stage_data['enable_ssl']
+      ssl_port                      stage_data['ssl_port'] || 443
+      ssl_cert_file                 ssl_dir + ssl_cert_file
+      ssl_cert_key_file             ssl_dir + ssl_key_file
+      ssl_cert_chain_file           ssl_dir + ssl_chain_file
     end
 
     # If we're using SSL, create the appropriate 
