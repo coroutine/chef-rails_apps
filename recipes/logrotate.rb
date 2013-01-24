@@ -22,8 +22,12 @@ if node['recipes'].include?('logrotate') ||
    node['recipes'].include?('logrotate::default')
  
   logs = [] # wild-card path for rails logs
-
-  node['rails_apps'].each do |dbag_item|
+  
+  # if we've explicitly defined a logrotate set, use that; otherwise, 
+  # default to setup set.
+  apps = node['logrotate_apps'].empty? ? node['rails_apps'] : node['logrotate_apps'] 
+  
+  apps.each do |dbag_item|
     app_config = Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
     appname = app_config['appname']
     app_config['stages'].each do |stage_name, stage_data|
