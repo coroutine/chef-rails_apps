@@ -20,7 +20,7 @@
 # The following are a list of item id's stored in a 
 # "rails_apps" data bag.
 default[:rails_apps] = [] 
-default[:logrotate_app] = []
+default[:logrotate_apps] = []
 
 # e.g. ['sample01', 'sample01'], where each is a data bag item:
 #
