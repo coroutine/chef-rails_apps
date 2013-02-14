@@ -32,9 +32,7 @@
 # Fetch the setup items from the Databag; It contains things like Database users,
 # passwords, DB names and encoding.
 setup_items = []
-node['rails_apps']['pg_setup_items'].each do |itemname|
-  databag = node['rails_apps']['databag']
-
+node.fetch('rails_apps').fetch('pg_setup_items').each do |dbag_item|
   # NOTE: shared secret must be in "/etc/chef/encrypted_data_bag_secret"
   Chef::Log.info("fetching #{dbag_item} from Encrypted 'rails_apps' data bag")
   i = Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
