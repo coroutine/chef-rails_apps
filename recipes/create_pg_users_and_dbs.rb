@@ -45,7 +45,7 @@
 # Fetch the setup items from the Databag; It contains things like Database users,
 # passwords, DB names and encoding.
 setup_items = []
-node.fetch('rails_apps').fetch('pg_setup_items').values.each do |dbag_item|
+node['rails_apps'].each do |dbag_item|
   # NOTE: shared secret must be in "/etc/chef/encrypted_data_bag_secret"
   Chef::Log.info("fetching #{dbag_item} from Encrypted 'rails_apps' data bag")
   i = Chef::EncryptedDataBagItem.load("rails_apps", dbag_item)
@@ -73,11 +73,10 @@ end
 #     sudo -u postgres psql -c "\du" | grep some_user
 
 setup_items.each do |setup|
-
-  setup["stages"].each do |stage|
-    db_config = stage.fetch('database')
-    user_name  = db_config.fetch('username')
-    db_name   = db_config.fetch('dbname')
+  setup["stages"].each do |stage, stage_config|
+    db_config = stage_config['database']
+    user_name = db_config['username']
+    db_name   = db_config['dbname']
 
     create_user_command = begin
         ["sudo -u postgres createuser #{user_name}",
@@ -86,7 +85,7 @@ setup_items.each do |setup|
 
     set_user_password = begin
         "sudo -u postgres psql -c \"ALTER USER #{user_name} " +
-        "WITH PASSWORD '#{db_config.fetch('password')}';\""
+        "WITH PASSWORD '#{db_config['password']}';\""
     end
 
     bash "create_user" do
@@ -99,8 +98,8 @@ setup_items.each do |setup|
 
     create_database_command = begin
       ["sudo -u postgres createdb #{db_name}",
-        "--owner=#{user_name} ", "--encoding=#{db_config.fetch('encoding')}",
-        "--locale=#{db_config.fetch('locale')}", "--template=#{db_config.fetch('template')}"].join(' ')
+        "--owner=#{user_name} ", "--encoding=#{db_config['encoding']}",
+        "--locale=#{db_config['locale']}", "--template=#{db_config['template']}"].join(' ')
     end
 
     bash "create_database" do
