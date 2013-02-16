@@ -80,7 +80,7 @@ setup_items.each do |setup|
 
     create_user_command = begin
         ["sudo -u postgres createuser #{user_name}",
-        " --no-superuser", "--no-createdb", "--no-createrole"].join(' ')
+        " --no-superuser", "--no-createdb", "--no-createrole", ";"].join(' ')
     end
 
     set_user_password = begin
@@ -91,7 +91,8 @@ setup_items.each do |setup|
     bash "create_user" do
       user "root"
       code <<-EOH
-        #{create_user_command} #{set_user_password}
+        #{create_user_command}
+        ##{set_user_password}
       EOH
       not_if "sudo -u postgres psql -c \"\\du\" | grep #{user_name}"
     end
