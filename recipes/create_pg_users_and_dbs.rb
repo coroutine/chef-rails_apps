@@ -92,7 +92,7 @@ setup_items.each do |setup|
       user "root"
       code <<-EOH
         #{create_user_command}
-        ##{set_user_password}
+        #{set_user_password}
       EOH
       not_if "sudo -u postgres psql -c \"\\du\" | grep #{user_name}"
     end
