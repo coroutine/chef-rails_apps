@@ -75,6 +75,12 @@ end
 setup_items.each do |setup|
   setup["stages"].each do |stage, stage_config|
     db_config = stage_config['database']
+
+    if db_config['adapter'] != 'postgresql'
+      Chef::Log.info("Skipping non-postgres DB config")
+      next
+    end
+
     user_name = db_config['username']
     db_name   = db_config['dbname']
 
