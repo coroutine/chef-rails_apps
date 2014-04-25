@@ -1,7 +1,7 @@
 <Directory <%= @params[:docroot] %>>
-    <% if @params[:rack_env] %>
-    RackEnv                 "<%= @params[:rack_env] %>"
-    <% end %>
+    
+    RackEnv                 "<%= @params[:acme_rails_env] %>"
+    
     <% if @params[:passenger_min_instances] %>
     PassengerMinInstances   <%= @params[:passenger_min_instances] %>
     <% end %>
